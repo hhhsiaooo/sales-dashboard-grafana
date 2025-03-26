@@ -1,0 +1,1038 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 4,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [
+        "sales"
+      ],
+      "targetBlank": false,
+      "title": "Navigation",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": true,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "eegbrbjtjepkwb"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    'last week' AS period,\r\n    COUNT(*) AS count\r\nFROM customer_behavior b\r\nJOIN customer c ON b.customer_id=c.customer_id\r\nWHERE b.action_type = 'purchase'\r\nAND \r\n    (\r\n    (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n    )\r\nAND \r\n    (\r\n    (c.gender = 'F' AND '女' IN (${gender}))\r\n    OR (c.gender = 'M' AND '男' IN (${gender}))\r\n    )\r\nAND\r\n    (\r\n    (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n    OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n    OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n    OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n    OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n    OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n    OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n    )\r\nAND b.action_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '2 week'\r\nAND b.action_at < DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\n\r\nUNION ALL\r\n\r\nSELECT \r\n    'this week' AS period,\r\n    COUNT(*) AS count\r\nFROM customer_behavior b\r\nJOIN customer c ON b.customer_id=c.customer_id\r\nWHERE b.action_type = 'purchase'\r\nAND \r\n    (\r\n    (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n    )\r\nAND \r\n    (\r\n    (c.gender = 'F' AND '女' IN (${gender}))\r\n    OR (c.gender = 'M' AND '男' IN (${gender}))\r\n    )\r\nAND\r\n    (\r\n    (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n    OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n    OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n    OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n    OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n    OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n    OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n    )\r\nAND b.action_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\nAND b.action_at < DATE_TRUNC('week', CURRENT_DATE)\r\nORDER BY period ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "本周訂單數",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 6,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    ROUND(COUNT(DISTINCT b.customer_id) * 100.0 / SUM(COUNT(DISTINCT b.customer_id)) OVER(), 2) AS percentage,\r\n    CASE \r\n        WHEN DATE_PART('year', AGE(NOW(), birth)) < 20 THEN '0-19歲'\r\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 20 AND 29 THEN '20-29歲'\r\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 30 AND 39 THEN '30-39歲'\r\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 40 AND 49 THEN '40-49歲'\r\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 50 AND 59 THEN '50-59歲'\r\n        ELSE '60歲以上'\r\n    END AS age_group\r\nFROM customer_behavior b\r\nJOIN customer c ON b.customer_id = c.customer_id\r\nWHERE b.action_type = 'purchase'\r\nAND\r\n    (\r\n    (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n    )\r\nAND \r\n    (\r\n    (c.gender = 'F' AND '女' IN (${gender}))\r\n    OR (c.gender = 'M' AND '男' IN (${gender}))\r\n    )\r\nAND\r\n    (\r\n    (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n    OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n    OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n    OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n    OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n    OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n    OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n    )\r\nAND b.action_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\nAND b.action_at < DATE_TRUNC('week', CURRENT_DATE)\r\nGROUP BY age_group\r\nORDER BY age_group;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "購買會員年齡",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 11,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    CASE \r\n        WHEN b.referrer = 'direct' THEN '直接訪問'\r\n        WHEN b.referrer = 'email' THEN '電子郵件'\r\n        WHEN b.referrer = 'paid_ads' THEN '廣告'\r\n        WHEN b.referrer = 'referral' THEN '其他網站'\r\n        WHEN b.referrer = 'search_engine' THEN '搜尋引擎'\r\n        WHEN b.referrer = 'social_media' THEN '社群網站'\r\n        WHEN b.referrer = 'unknown' THEN '未知'\r\n    END AS referrer, \r\n    -- COUNT(*) AS customer_count,\r\n    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) AS percentage\r\nFROM customer_behavior b\r\nJOIN customer c ON b.customer_id = c.customer_id\r\nWHERE b.action_type = 'purchase'\r\nAND \r\n    (\r\n    (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n    )\r\nAND \r\n    (\r\n    (c.gender = 'F' AND '女' IN (${gender}))\r\n    OR (c.gender = 'M' AND '男' IN (${gender}))\r\n    )\r\nAND\r\n    (\r\n    (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n    OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n    OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n    OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n    OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n    OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n    OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n    )\r\nAND b.action_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\nAND b.action_at < DATE_TRUNC('week', CURRENT_DATE)\r\nGROUP BY b.referrer\r\nORDER BY percentage DESC ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "購買通路",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "min": 0
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "sorting": "descending"
+      },
+      "pluginVersion": "1.2.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    b.action_type,\r\n    COUNT(b.customer_id) AS customer_count\r\nFROM customer_behavior b\r\nJOIN customer c ON b.customer_id = c.customer_id\r\nWHERE \r\n    (\r\n    (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n    )\r\nAND \r\n    (\r\n    (c.gender = 'F' AND '女' IN (${gender}))\r\n    OR (c.gender = 'M' AND '男' IN (${gender}))\r\n    )\r\nAND\r\n    (\r\n    (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n    OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n    OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n    OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n    OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n    OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n    OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n    )\r\nAND b.action_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\nAND b.action_at < DATE_TRUNC('week', CURRENT_DATE)\r\nGROUP BY b.action_type\r\nORDER BY customer_count desc;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "會員購物歷程",
+      "transformations": [
+        {
+          "id": "transpose",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "add_to_cart": "加入購物車",
+              "purchase": "購買商品",
+              "view": "查看商品"
+            }
+          }
+        }
+      ],
+      "type": "mckn-funnel-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "semi-dark-green",
+            "mode": "shades"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [
+            {
+              "options": {
+                "F": {
+                  "index": 0,
+                  "text": "女"
+                },
+                "M": {
+                  "index": 1,
+                  "text": "男"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    c.gender,\r\n    COUNT(DISTINCT b.customer_id) AS customer_count\r\nFROM customer_behavior b\r\nJOIN customer c ON b.customer_id=c.customer_id\r\nWHERE b.action_type = 'purchase'\r\nAND\r\n    (\r\n    (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n    OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n    )\r\nAND \r\n    (\r\n    (c.gender = 'F' AND '女' IN (${gender}))\r\n    OR (c.gender = 'M' AND '男' IN (${gender}))\r\n    )\r\nAND\r\n    (\r\n    (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n    OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n    OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n    OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n    OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n    OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n    OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n    )\r\nAND b.action_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\nAND b.action_at < DATE_TRUNC('week', CURRENT_DATE)\r\nGROUP BY c.gender;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "購買會員性別",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "數量增減"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "unit",
+                "value": ""
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "金額增減"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 11,
+        "x": 0,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    COALESCE(this_week.category, last_week.category) AS category,\r\n    this_week.transaction_count AS this_week_count,\r\n    last_week.transaction_count AS last_week_count,\r\n    this_week.transaction_total AS this_week_total,\r\n    last_week.transaction_total AS last_week_total\r\nFROM \r\n    (SELECT \r\n        p.category AS category,\r\n        COUNT(*) AS transaction_count,\r\n        SUM(total) AS transaction_total\r\n    FROM transaction t\r\n    JOIN product p ON t.product_id = p.product_id\r\n    JOIN customer c ON t.customer_id = c.customer_id\r\n    JOIN customer_behavior b ON t.customer_id = b.customer_id\r\n    AND t.product_id = b.product_id\r\n    AND t.transaction_at = b.action_at\r\n    WHERE \r\n        (\r\n        (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n        )\r\n    AND \r\n        (\r\n        (c.gender = 'F' AND '女' IN (${gender}))\r\n        OR (c.gender = 'M' AND '男' IN (${gender}))\r\n        )\r\n    AND\r\n        (\r\n        (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n        OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n        OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n        OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n        OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n        OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n        OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n        )\r\n    AND t.transaction_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\n    AND t.transaction_at < DATE_TRUNC('week', CURRENT_DATE)\r\n    GROUP BY p.category) AS this_week\r\n\r\nFULL JOIN \r\n    (SELECT \r\n        p.category AS category,\r\n        COUNT(*) AS transaction_count,\r\n        SUM(total) AS transaction_total\r\n    FROM transaction t\r\n    JOIN product p ON t.product_id = p.product_id\r\n    JOIN customer c ON t.customer_id = c.customer_id\r\n    JOIN customer_behavior b ON t.customer_id = b.customer_id\r\n    AND t.product_id = b.product_id\r\n    AND t.transaction_at = b.action_at\r\n    WHERE \r\n        (\r\n        (DATE_PART('year', AGE(NOW(), c.birth)) < 20 AND '0-19歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 20 AND 29 AND '20-29歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 30 AND 39 AND '30-39歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 40 AND 49 AND '40-49歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) BETWEEN 50 AND 59 AND '50-59歲' IN (${age_group}))\r\n        OR (DATE_PART('year', AGE(NOW(), c.birth)) >= 60 AND '60歲以上' IN (${age_group}))\r\n        )\r\n    AND \r\n        (\r\n        (c.gender = 'F' AND '女' IN (${gender}))\r\n        OR (c.gender = 'M' AND '男' IN (${gender}))\r\n        )\r\n    AND\r\n        (\r\n        (b.referrer = 'direct' AND '直接訪問' IN (${referrer})) \r\n        OR (b.referrer = 'email' AND '電子郵件' IN (${referrer})) \r\n        OR (b.referrer = 'paid_ads' AND '廣告' IN (${referrer})) \r\n        OR (b.referrer = 'referral' AND '其他網站' IN (${referrer})) \r\n        OR (b.referrer = 'search_engine' AND '搜尋引擎' IN (${referrer})) \r\n        OR (b.referrer = 'social_media' AND '社群網站' IN (${referrer})) \r\n        OR (b.referrer = 'unknown' AND '未知' IN (${referrer})) \r\n        )\r\n    AND t.transaction_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '2 week'\r\n    AND t.transaction_at < DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\n    GROUP BY p.category) AS last_week\r\n\r\nON this_week.category = last_week.category\r\nORDER BY this_week.category;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "各類商品購買情形",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "數量增減",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "this_week_count"
+                }
+              },
+              "operator": "-",
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "last_week_count"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "金額增減",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "this_week_total"
+                }
+              },
+              "operator": "-",
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "last_week_total"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "last_week_count": true,
+              "last_week_total": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "category": 0,
+              "last_week_count": 3,
+              "last_week_total": 6,
+              "this_week_count": 1,
+              "this_week_total": 4,
+              "數量增減": 2,
+              "金額增減": 5
+            },
+            "renameByName": {
+              "category": "商品類型",
+              "this_week_count": "本周購買數量",
+              "this_week_total": "本周購買金額"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "noValue": "無",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "促銷活動日期"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 13,
+        "x": 11,
+        "y": 8
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT *\r\nFROM promotion\r\nWHERE published_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'\r\nAND published_at < DATE_TRUNC('week', CURRENT_DATE)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "本周促銷活動",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "promotion_id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "cash_threshold": "金額門檻",
+              "discount_rate": "折扣比率",
+              "gift": "贈品",
+              "promotion_name": "促銷活動名稱",
+              "promotion_type": "促銷活動類型",
+              "published_at": "促銷活動日期",
+              "quantity_threshold": "數量門檻"
+            }
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "outputFormat": "YYYY-MM-DD",
+            "timeField": "促銷活動日期",
+            "useTimezone": true
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "noValue": "無",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "數量門檻"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 106
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "贈品"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "金額門檻"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 103
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "促銷活動名稱"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 106
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "促銷活動類型"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 101
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "折扣比率"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 103
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 13,
+        "x": 11,
+        "y": 14
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT *\r\nFROM promotion\r\nWHERE published_at >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '2 week'\r\nAND published_at < DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "上周促銷活動",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "promotion_id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "cash_threshold": "金額門檻",
+              "discount_rate": "折扣比率",
+              "gift": "贈品",
+              "promotion_name": "促銷活動名稱",
+              "promotion_type": "促銷活動類型",
+              "published_at": "促銷活動日期",
+              "quantity_threshold": "數量門檻"
+            }
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "outputFormat": "YYYY-MM-DD",
+            "timeField": "促銷活動日期",
+            "useTimezone": true
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [
+    "sales"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "SELECT \nCASE \n WHEN gender = 'F' THEN '女'\n WHEN gender = 'M' THEN '男'\nEND AS gender\nFROM customer;",
+        "includeAll": true,
+        "label": "性別",
+        "name": "gender",
+        "options": [],
+        "query": "SELECT \nCASE \n WHEN gender = 'F' THEN '女'\n WHEN gender = 'M' THEN '男'\nEND AS gender\nFROM customer;",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "SELECT \n    CASE \n        WHEN DATE_PART('year', AGE(NOW(), birth)) < 20 THEN '0-19歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 20 AND 29 THEN '20-29歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 30 AND 39 THEN '30-39歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 40 AND 49 THEN '40-49歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 50 AND 59 THEN '50-59歲'\n        ELSE '60歲以上'\n    END AS age_group\nFROM customer\nGROUP BY age_group\nORDER BY age_group;\n",
+        "includeAll": true,
+        "label": "年齡級距",
+        "name": "age_group",
+        "options": [],
+        "query": "SELECT \n    CASE \n        WHEN DATE_PART('year', AGE(NOW(), birth)) < 20 THEN '0-19歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 20 AND 29 THEN '20-29歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 30 AND 39 THEN '30-39歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 40 AND 49 THEN '40-49歲'\n        WHEN DATE_PART('year', AGE(NOW(), birth)) BETWEEN 50 AND 59 THEN '50-59歲'\n        ELSE '60歲以上'\n    END AS age_group\nFROM customer\nGROUP BY age_group\nORDER BY age_group;\n",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "SELECT \nCASE \n WHEN referrer = 'direct' THEN '直接訪問'\n WHEN referrer = 'email' THEN '電子郵件'\n WHEN referrer = 'paid_ads' THEN '廣告'\n WHEN referrer = 'referral' THEN '其他網站'\n WHEN referrer = 'search_engine' THEN '搜尋引擎'\n WHEN referrer = 'social_media' THEN '社群網站'\n WHEN referrer = 'unknown' THEN '未知'\nEND AS referrer\nFROM customer_behavior;",
+        "includeAll": true,
+        "label": "通路",
+        "name": "referrer",
+        "options": [],
+        "query": "SELECT \nCASE \n WHEN referrer = 'direct' THEN '直接訪問'\n WHEN referrer = 'email' THEN '電子郵件'\n WHEN referrer = 'paid_ads' THEN '廣告'\n WHEN referrer = 'referral' THEN '其他網站'\n WHEN referrer = 'search_engine' THEN '搜尋引擎'\n WHEN referrer = 'social_media' THEN '社群網站'\n WHEN referrer = 'unknown' THEN '未知'\nEND AS referrer\nFROM customer_behavior;",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "2025-03-23T18:28:14.344Z",
+    "to": "2025-03-24T18:28:14.344Z"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "本周比較",
+  "uid": "aegpa2g8bb01sb",
+  "version": 73,
+  "weekStart": ""
+}

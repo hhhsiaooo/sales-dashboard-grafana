@@ -1,0 +1,1110 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [
+        "sales"
+      ],
+      "targetBlank": false,
+      "title": "Navigation",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "eegbrbjtjepkwb"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*)\r\nFROM transaction\r\nWHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE)\r\nAND transaction_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year';\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "今年訂單量",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "this_year_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "今年"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_year_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "去年"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 4,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    last_year.month,\r\n    this_year.transaction_count AS this_year_count,\r\n    last_year.transaction_count AS last_year_count\r\n\r\nFROM \r\n    (SELECT \r\n        EXTRACT(MONTH FROM transaction_at) AS month,\r\n        COUNT(*) AS transaction_count\r\n    FROM transaction\r\n    WHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\n      AND transaction_at < DATE_TRUNC('year', CURRENT_DATE)\r\n    GROUP BY month) AS last_year\r\n\r\nLEFT JOIN \r\n    (SELECT \r\n        EXTRACT(MONTH FROM transaction_at) AS month,\r\n        COUNT(*) AS transaction_count\r\n    FROM transaction\r\n    WHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE)\r\n      AND transaction_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'\r\n    GROUP BY month) AS this_year\r\n\r\nON last_year.month = this_year.month\r\nORDER BY last_year.month;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "訂單量月趨勢",
+      "type": "trend"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "eegbrbjtjepkwb"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    SUM(total) / COUNT(*) AS avg_order_value\r\nFROM transaction\r\nWHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE)\r\nAND transaction_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "今年平均客單價",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "this_year_avg_value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "今年"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_year_avg_value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "去年"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    last_year.month,\r\n    this_year.avg_order_value AS this_year_avg_value,\r\n    last_year.avg_order_value AS last_year_avg_value\r\n\r\nFROM \r\n    (SELECT \r\n        EXTRACT(MONTH FROM transaction_at) AS month,\r\n        SUM(total) / COUNT(*) AS avg_order_value\r\n    FROM transaction\r\n    WHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\n      AND transaction_at < DATE_TRUNC('year', CURRENT_DATE)\r\n    GROUP BY month) AS last_year\r\n\r\nLEFT JOIN \r\n    (SELECT \r\n        EXTRACT(MONTH FROM transaction_at) AS month,\r\n        SUM(total) / COUNT(*) AS avg_order_value\r\n    FROM transaction\r\n    WHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE)\r\n      AND transaction_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'\r\n    GROUP BY month) AS this_year\r\n\r\nON last_year.month = this_year.month\r\nORDER BY last_year.month;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "客單價月趨勢",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "last_year_avg_value": "去年",
+              "this_year_avg_value": "今年"
+            }
+          }
+        }
+      ],
+      "type": "trend"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "yellow",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "eegbrbjtjepkwb"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*)\r\nFROM transaction\r\nWHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\nAND transaction_at < DATE_TRUNC('year', CURRENT_DATE);",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "去年訂單量",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 12,
+        "y": 3
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "eegbrbjtjepkwb"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n    SUM(total) / COUNT(*) AS avg_order_value\r\nFROM transaction\r\nWHERE transaction_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\nAND transaction_at < DATE_TRUNC('year', CURRENT_DATE);",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "去年平均客單價",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto",
+              "wrapText": false
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "佔比"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 30
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 7,
+        "x": 0,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    COALESCE(this_year.referrer, last_year.referrer) AS referrer,\r\n    this_year.transaction_count AS this_year_count,\r\n    last_year.transaction_count AS last_year_count,\r\n    ROUND(this_year.transaction_count * 100.0 / SUM(this_year.transaction_count) OVER(), 2) AS this_year_percentage,\r\n    ROUND(last_year.transaction_count * 100.0 / SUM(last_year.transaction_count) OVER(), 2) AS last_year_percentage\r\nFROM \r\n    (SELECT \r\n        -- referrer,\r\n        CASE \r\n            WHEN referrer = 'direct' THEN '直接訪問'\r\n            WHEN referrer = 'email' THEN '電子郵件'\r\n            WHEN referrer = 'paid_ads' THEN '廣告'\r\n            WHEN referrer = 'referral' THEN '其他網站'\r\n            WHEN referrer = 'search_engine' THEN '搜尋引擎'\r\n            WHEN referrer = 'social_media' THEN '社群網站'\r\n            WHEN referrer = 'unknown' THEN '未知'\r\n        END AS referrer,\r\n        COUNT(*) AS transaction_count\r\n    FROM customer_behavior\r\n    WHERE action_type = 'purchase'\r\n      AND action_at >= DATE_TRUNC('year', CURRENT_DATE)\r\n      AND action_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'\r\n    GROUP BY referrer) AS this_year\r\n\r\nFULL JOIN \r\n    (SELECT \r\n        -- referrer,\r\n        CASE \r\n            WHEN referrer = 'direct' THEN '直接訪問'\r\n            WHEN referrer = 'email' THEN '電子郵件'\r\n            WHEN referrer = 'paid_ads' THEN '廣告'\r\n            WHEN referrer = 'referral' THEN '其他網站'\r\n            WHEN referrer = 'search_engine' THEN '搜尋引擎'\r\n            WHEN referrer = 'social_media' THEN '社群網站'\r\n            WHEN referrer = 'unknown' THEN '未知'\r\n        END AS referrer,\r\n        COUNT(*) AS transaction_count\r\n    FROM customer_behavior\r\n    WHERE action_type = 'purchase'\r\n      AND action_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\n      AND action_at < DATE_TRUNC('year', CURRENT_DATE)\r\n    GROUP BY referrer) AS last_year\r\n\r\nON this_year.referrer = last_year.referrer\r\nORDER BY this_year_count DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "各通路轉換次數",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "last_year_count": 3,
+              "last_year_percentage": 4,
+              "referrer": 0,
+              "this_year_count": 1,
+              "this_year_percentage": 2
+            },
+            "renameByName": {
+              "last_year_count": "去年",
+              "last_year_percentage": "佔比",
+              "referrer": "通路",
+              "this_year_count": "今年",
+              "this_year_percentage": "佔比"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto",
+              "wrapText": false
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "佔比"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 30
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 7,
+        "y": 6
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    COALESCE(this_year.category, last_year.category) AS category,\r\n    this_year.transaction_count AS this_year_count,\r\n    last_year.transaction_count AS last_year_count,\r\n    ROUND(this_year.transaction_count * 100.0 / SUM(this_year.transaction_count) OVER(), 2) AS this_year_percentage,\r\n    ROUND(last_year.transaction_count * 100.0 / SUM(last_year.transaction_count) OVER(), 2) AS last_year_percentage\r\nFROM \r\n    (SELECT \r\n        p.category,\r\n        COUNT(*) AS transaction_count\r\n    FROM transaction t\r\n    JOIN product p ON t.product_id = p.product_id \r\n    WHERE t.transaction_at >= DATE_TRUNC('year', CURRENT_DATE)\r\n    AND t.transaction_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'\r\n    GROUP BY p.category) AS this_year\r\n\r\nFULL JOIN \r\n    (SELECT \r\n        p.category,\r\n        COUNT(*) AS transaction_count\r\n    FROM transaction t\r\n    JOIN product p ON t.product_id = p.product_id \r\n    WHERE t.transaction_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\n    AND t.transaction_at < DATE_TRUNC('year', CURRENT_DATE)\r\n    GROUP BY p.category) AS last_year\r\n\r\nON this_year.category = last_year.category\r\nORDER BY this_year_count DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "各類商品購買次數",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "category": 0,
+              "last_year_count": 3,
+              "last_year_percentage": 4,
+              "this_year_count": 1,
+              "this_year_percentage": 2
+            },
+            "renameByName": {
+              "category": "商品類別",
+              "last_year_count": "去年",
+              "last_year_percentage": "佔比",
+              "referrer": "渠道",
+              "this_year_count": "今年",
+              "this_year_percentage": "佔比"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "eegbrbjtjepkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto",
+              "wrapText": false
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "佔比"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 30
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "今年"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "去年"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 9,
+        "x": 15,
+        "y": 6
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n    COALESCE(this_year.category, last_year.category) AS category,\r\n    this_year.transaction_total AS this_year_total,\r\n    last_year.transaction_total AS last_year_total,\r\n    ROUND(this_year.transaction_total * 100.0 / SUM(this_year.transaction_total) OVER(), 2) AS this_year_percentage,\r\n    ROUND(last_year.transaction_total * 100.0 / SUM(last_year.transaction_total) OVER(), 2) AS last_year_percentage\r\nFROM \r\n    (SELECT \r\n        p.category,\r\n        SUM(total) AS transaction_total\r\n    FROM transaction t\r\n    JOIN product p ON t.product_id = p.product_id  \r\n    WHERE t.transaction_at >= DATE_TRUNC('year', CURRENT_DATE)\r\n    AND t.transaction_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'\r\n    GROUP BY p.category) AS this_year\r\n\r\nFULL JOIN \r\n    (SELECT\r\n        p.category,\r\n        SUM(total) AS transaction_total\r\n    FROM transaction t\r\n    JOIN product p ON t.product_id = p.product_id \r\n    WHERE t.transaction_at >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'\r\n    AND t.transaction_at < DATE_TRUNC('year', CURRENT_DATE)\r\n    GROUP BY p.category) AS last_year\r\n\r\nON this_year.category = last_year.category\r\nORDER BY this_year_total DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "各類商品購買金額",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "category": 0,
+              "last_year_percentage": 4,
+              "last_year_total": 3,
+              "this_year_percentage": 2,
+              "this_year_total": 1
+            },
+            "renameByName": {
+              "category": "商品類別",
+              "last_year_count": "去年",
+              "last_year_percentage": "佔比",
+              "last_year_total": "去年",
+              "referrer": "渠道",
+              "this_year_count": "今年",
+              "this_year_percentage": "佔比",
+              "this_year_total": "今年"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [
+    "sales"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "年度比較",
+  "uid": "eegpa0qh4od1cb",
+  "version": 43,
+  "weekStart": ""
+}
